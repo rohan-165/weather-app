@@ -14,18 +14,22 @@ This project is a starting point for a Flutter application that provides weather
   - Shows brief 7-day forecast
   - "More Details" option to view detailed hourly forecast for each day
 
-  ![Main Screen](screenshots/home_screen.png)
+  <img src="screenshots/home_screen.png" alt="Main Screen" width="300" height="600"/>
+
+
 
 - **Forecast Details Screen:**
   - On clicking "More Details", navigates to a screen showing hourly forecasts for each day of the week
 
-  ![Forecast Details Screen](screenshots/forecast.png)
+  <img src="screenshots/forecast.png" alt="Forecast Details Screen" width="300" height="600"/>
+
 
 - **Location Search:**
   - Floating Action Button (FAB) on the main screen opens a location search screen
   - On selecting a location, navigates back and shows weather data for the selected city
 
-  ![Location Search Screen](screenshots/search.png)
+  <img src="screenshots/search.png" alt="Location Search Screen" width="300" height="600"/>
+
 
 A few resources to get you started if this is your first Flutter project:
 
