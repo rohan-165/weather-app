@@ -15,7 +15,9 @@ import 'package:weather_app/core/widget/pull_to_refresh_widget.dart';
 import 'package:weather_app/dashboard/domain/model/weather_model.dart';
 import 'package:weather_app/dashboard/presentation/cubit/forecast_cubit.dart';
 import 'package:weather_app/dashboard/presentation/cubit/selected_location_cubit.dart';
+import 'package:weather_app/dashboard/presentation/widget/astro_widget.dart';
 import 'package:weather_app/dashboard/presentation/widget/current_temp_view.dart';
+import 'package:weather_app/dashboard/presentation/widget/other_info.dart';
 import 'package:weather_app/dashboard/presentation/widget/seven_day_forecast_view.dart';
 import 'package:weather_app/dashboard/presentation/widget/today_forecast_view.dart';
 
@@ -81,14 +83,24 @@ class _WeatherScreenState extends State<WeatherScreen> {
                             Text(
                               forecasteState.data?.location?.name ?? '',
                               style: context.textTheme.displayMedium,
-                            ).padTop(top: 20.h),
+                            ).padTop(top: 10.h),
+
                             CurrentTempView(
                               current:
                                   forecasteState.data?.current ?? Current(),
                               forecast:
                                   forecasteState.data?.forecast ?? Forecast(),
                             ).padBottom(bottom: 10.h),
-
+                            AstroWidget(
+                              astro:
+                                  forecasteState
+                                      .data
+                                      ?.forecast
+                                      ?.forecastday
+                                      ?.firstOrNull
+                                      ?.astro ??
+                                  Astro(),
+                            ).padBottom(bottom: 10.h),
                             TodayForecastView(
                               forecastDay:
                                   forecasteState
@@ -97,11 +109,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                                       ?.forecastday
                                       ?.firstOrNull ??
                                   Forecastday(),
-                            ).padBottom(bottom: 20.h),
+                            ).padBottom(bottom: 10.h),
                             SevenDayForecastView(
                               forecast:
                                   forecasteState.data?.forecast ?? Forecast(),
-                            ).padBottom(bottom: 20.h),
+                            ).padBottom(bottom: 10.h),
+                            OtherInfo(
+                              current:
+                                  forecasteState.data?.current ?? Current(),
+                            ).padBottom(bottom: 100.h),
                           ],
                         ),
                       ),

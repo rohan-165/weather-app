@@ -19,11 +19,15 @@ class TodayForecastView extends StatefulWidget {
 
 class _TodayForecastViewState extends State<TodayForecastView> {
   final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool> _viewMore = ValueNotifier<bool>(false);
   double itemWidth = 60.w;
 
   @override
   void initState() {
     super.initState();
+    if ((widget.title ?? '').isNotEmpty) {
+      _viewMore.value = true;
+    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final index = getCurrentHourIndex(widget.forecastDay.hour ?? []);
@@ -47,45 +51,62 @@ class _TodayForecastViewState extends State<TodayForecastView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(8.r),
-        color: context.isDark
-            ? AppColors.darkGreyColor
-            : AppColors.lightGreyColor,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            widget.title ?? 'Forecast for today',
-            style: context.textTheme.titleLarge,
-          ).padBottom(bottom: 10.w),
-          SingleChildScrollView(
-            controller: _scrollController,
-            primary: false,
-            physics: ClampingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: (widget.forecastDay.hour ?? [])
-                  .map(
-                    (e) => HourForecastItem(
-                      time: e.time ?? "", //hour
-                      temp: e.tempC, //temperature
-                      wind: e.windKph, //wind (km/h)
-                      rainChance: e.chanceOfRain, //rain chance (%)
-                      icon: e.condition?.icon ?? '',
-                      windDegree: e.windDegree,
-                    ).padRight(right: 15.w),
-                  )
-                  .toList(),
-            ).padVertical(vertical: 2.h),
+    return ValueListenableBuilder(
+      valueListenable: _viewMore,
+      builder: (_, viewMore, __) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.r),
+            color: context.isDark
+                ? AppColors.darkGreyColor
+                : AppColors.lightGreyColor,
           ),
-        ],
-      ).padAll(value: 15.w),
-    ).padHorizontal(horizontal: 10.w);
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.title ?? 'Today Forecast',
+                      style: context.textTheme.titleLarge,
+                    ),
+                  ),
+                  Text(
+                    viewMore ? "View less" : 'View more',
+                    style: context.textTheme.bodyLarge?.copyWith(
+                      decoration: TextDecoration.underline,
+                    ),
+                  ).onTap(() => _viewMore.value = !_viewMore.value),
+                ],
+              ).padBottom(bottom: 10.w),
+              SingleChildScrollView(
+                controller: _scrollController,
+                primary: false,
+                physics: ClampingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: (widget.forecastDay.hour ?? [])
+                      .map(
+                        (e) => HourForecastItem(
+                          time: e.time ?? "", //hour
+                          temp: e.tempC, //temperature
+                          wind: e.windKph, //wind (km/h)
+                          rainChance: e.chanceOfRain, //rain chance (%)
+                          icon: e.condition?.icon ?? '',
+                          viewMore: viewMore,
+                        ).padRight(right: 15.w),
+                      )
+                      .toList(),
+                ).padVertical(vertical: 2.h),
+              ),
+            ],
+          ).padAll(value: 15.w),
+        ).padHorizontal(horizontal: 10.w);
+      },
+    );
   }
 }
 
@@ -95,7 +116,7 @@ class HourForecastItem extends StatelessWidget {
   final dynamic wind;
   final dynamic rainChance;
   final String icon;
-  final dynamic windDegree;
+  final bool viewMore;
   const HourForecastItem({
     super.key,
     required this.icon,
@@ -103,7 +124,7 @@ class HourForecastItem extends StatelessWidget {
     required this.temp,
     required this.time,
     required this.wind,
-    required this.windDegree,
+    required this.viewMore,
   });
 
   @override
@@ -123,20 +144,21 @@ class HourForecastItem extends StatelessWidget {
           '$temp˚C',
           style: context.textTheme.titleMedium,
         ).padBottom(bottom: 10.h),
-
-        Text(
-          '${wind}km/h',
-          style: context.textTheme.bodyMedium,
-        ).padBottom(bottom: 10.h),
-        FaIcon(
-          FontAwesomeIcons.umbrella,
-          color: AppColors.blueColor,
-          size: 25.h,
-        ).padBottom(bottom: 5.h),
-        Text(
-          '$rainChance %',
-          style: context.textTheme.bodyLarge,
-        ).padBottom(bottom: 10.h),
+        if (viewMore) ...{
+          Text(
+            '${wind}km/h',
+            style: context.textTheme.bodyMedium,
+          ).padBottom(bottom: 10.h),
+          FaIcon(
+            FontAwesomeIcons.umbrella,
+            color: AppColors.blueColor,
+            size: 25.h,
+          ).padBottom(bottom: 5.h),
+          Text(
+            '$rainChance %',
+            style: context.textTheme.bodyLarge,
+          ).padBottom(bottom: 10.h),
+        },
       ],
     );
   }
