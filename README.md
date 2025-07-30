@@ -14,7 +14,8 @@ This project is a starting point for a Flutter application that provides weather
   - Shows brief 7-day forecast
   - "More Details" option to view detailed hourly forecast for each day
 
-  <img src="screenshots/home_screen.png" alt="Main Screen" width="300" height="600"/>
+  <img src="screenshots/home1.png" alt="Main Screen" width="300" height="600"/> <img src="screenshots/home2.png" alt="Main Screen" width="300" height="600"/>
+  
 
 
 
