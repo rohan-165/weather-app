@@ -18,7 +18,6 @@ This project is a starting point for a Flutter application that provides weather
   
 
 
-
 - **Forecast Details Screen:**
   - On clicking "More Details", navigates to a screen showing hourly forecasts for each day of the week
 
