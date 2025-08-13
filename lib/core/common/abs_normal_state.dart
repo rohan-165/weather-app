@@ -36,18 +36,14 @@ class AbsNormalStateImpl<T> extends AbsNormalState<T> {
     T? data,
     Failure? failure,
     AbsNormalStatus? absNormalStatus,
-  }) {
-    return AbsNormalStateImpl<T>(
-      failure: failure ?? this.failure,
-      absNormalStatus: absNormalStatus ?? this.absNormalStatus,
-      data: data ?? this.data,
-    );
-  }
-
-  @override
-  List<Object?> get props => [data, failure, absNormalStatus];
+  }) => AbsNormalStateImpl<T>(
+    data: data ?? this.data,
+    failure: failure ?? this.failure,
+    absNormalStatus: absNormalStatus ?? this.absNormalStatus,
+  );
 }
 
+// Concrete States
 class AbsNormalLoadingState<T> extends AbsNormalStateImpl<T> {
   const AbsNormalLoadingState()
     : super(absNormalStatus: AbsNormalStatus.LOADING);
@@ -55,12 +51,12 @@ class AbsNormalLoadingState<T> extends AbsNormalStateImpl<T> {
 
 class AbsNormalSuccessState<T> extends AbsNormalStateImpl<T> {
   const AbsNormalSuccessState({required T data})
-    : super(data: data, absNormalStatus: AbsNormalStatus.SUCCESS);
+    : super(absNormalStatus: AbsNormalStatus.SUCCESS, data: data);
 }
 
 class AbsNormalFailureState<T> extends AbsNormalStateImpl<T> {
-  const AbsNormalFailureState({required Failure failure})
-    : super(failure: failure, absNormalStatus: AbsNormalStatus.ERROR);
+  const AbsNormalFailureState({super.failure})
+    : super(absNormalStatus: AbsNormalStatus.ERROR);
 }
 
 class AbsNormalInitialState<T> extends AbsNormalStateImpl<T> {
