@@ -1,7 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:weather_app/core/utils/app_toast.dart';
@@ -34,6 +33,7 @@ class _AppExitState<T> extends State<AppExit<T>> implements PopEntry<T> {
   late final ValueNotifier<bool> canPopNotifier;
 
   DateTime? _lastBackPressTime;
+  static const _exitThreshold = Duration(seconds: 2);
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _AppExitState<T> extends State<AppExit<T>> implements PopEntry<T> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final ModalRoute<dynamic>? newRoute = ModalRoute.of(context);
+    final newRoute = ModalRoute.of(context);
     if (newRoute != _route) {
       _route?.unregisterPopEntry(this);
       _route = newRoute;
@@ -67,29 +67,36 @@ class _AppExitState<T> extends State<AppExit<T>> implements PopEntry<T> {
 
   @override
   void onPopInvoked(bool didPop) {
-    // Optional
+    // Optional override
   }
 
   @override
   void onPopInvokedWithResult(bool didPop, T? result) {
     if (widget.onPopInvokedWithResult != null) {
       widget.onPopInvokedWithResult!(didPop, result);
-    } else {
-      final DateTime now = DateTime.now();
-      if (_lastBackPressTime == null ||
-          now.difference(_lastBackPressTime!) > const Duration(seconds: 2)) {
-        _lastBackPressTime = now;
-        AppToasts().showToast(
-          message: "Tap back again to exit app.",
-          backgroundColor: Colors.black,
-        );
-      } else {
-        if (Platform.isAndroid) {
-          SystemNavigator.pop();
-        } else if (Platform.isIOS) {
-          exit(0);
-        }
-      }
+      return;
+    }
+    _handleExit();
+  }
+
+  void _handleExit() {
+    final now = DateTime.now();
+
+    if (_lastBackPressTime == null ||
+        now.difference(_lastBackPressTime!) > _exitThreshold) {
+      _lastBackPressTime = now;
+      AppToasts().showToast(
+        message: "Tap back again to exit app.",
+        backgroundColor: Colors.black,
+      );
+      return;
+    }
+
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
+    } else if (Platform.isIOS) {
+      // Use with caution in production — Apple discourages this
+      exit(0);
     }
   }
 
