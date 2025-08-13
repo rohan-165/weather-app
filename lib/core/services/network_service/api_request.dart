@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
@@ -203,6 +206,39 @@ class ApiRequestImpl implements ApiRequest {
       return Right(
         Failure(message: errorMessage, statusCode: statusCode?.toString()),
       );
+    } on SocketException {
+      logger.log(
+        'No Internet connection.',
+        level: LogLevel.error,
+        tag: 'SocketException',
+      );
+      toastHelper.showToast(
+        message: 'No Internet connection.',
+        toastType: ToastType.ERROR,
+      );
+      return Right(Failure(message: 'No Internet connection.'));
+    } on TimeoutException {
+      logger.log(
+        'Request timed out.',
+        level: LogLevel.error,
+        tag: 'TimeoutException',
+      );
+      toastHelper.showToast(
+        message: 'Request timed out.',
+        toastType: ToastType.ERROR,
+      );
+      return Right(Failure(message: 'Request timed out.'));
+    } on FormatException {
+      logger.log(
+        'Bad response format.',
+        level: LogLevel.error,
+        tag: 'FormatException',
+      );
+      toastHelper.showToast(
+        message: 'Bad response format.',
+        toastType: ToastType.ERROR,
+      );
+      return Right(Failure(message: 'Bad response format.'));
     } catch (e) {
       logger.log('Something went wrong', level: LogLevel.error);
       return Right(Failure(message: errorMessage ?? 'Something went wrong'));
