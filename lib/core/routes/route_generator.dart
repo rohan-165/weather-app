@@ -7,31 +7,35 @@ import 'package:weather_app/dashboard/presentation/screen/weather_screen.dart';
 class RouteGenerator {
   RouteGenerator._();
 
-  static Route<dynamic>? generateRoute(RouteSettings settings) {
-    // Object? argument = settings.arguments;
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    // final args = settings.arguments;
 
     switch (settings.name) {
       case RoutesName.weatherScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const WeatherScreen(),
-        );
+        return _materialPageRoute(const WeatherScreen(), settings);
+
       case RoutesName.sevendayForecastScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const SevenDayForecastScreen(),
-        );
+        return _materialPageRoute(const SevenDayForecastScreen(), settings);
+
       case RoutesName.searchLocationScreen:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (_) => const LocationSearchScreen(),
-        );
+        return _materialPageRoute(const LocationSearchScreen(), settings);
 
       default:
-        return MaterialPageRoute(
-          settings: settings,
-          builder: (BuildContext context) => const WeatherScreen(),
-        );
+        return _unknownRoute(settings);
     }
+  }
+
+  static MaterialPageRoute _materialPageRoute(
+    Widget screen,
+    RouteSettings settings,
+  ) {
+    return MaterialPageRoute(settings: settings, builder: (_) => screen);
+  }
+
+  static MaterialPageRoute _unknownRoute(RouteSettings settings) {
+    return MaterialPageRoute(
+      settings: settings,
+      builder: (_) => const WeatherScreen(),
+    );
   }
 }
