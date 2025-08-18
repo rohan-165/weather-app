@@ -59,10 +59,8 @@ class IsolateService {
     port.listen((message) {
       if (message is _IsolateTask) {
         try {
-          logger.log('Executing task inside isolate...', level: LogLevel.info);
           final result = message.task(message.param);
           message.replyTo.send(result);
-          logger.log('Task executed successfully ✅', level: LogLevel.success);
         } catch (e, st) {
           message.replyTo.send(Future.error(e, st));
           logger.log('Task failed ❌ : $e', level: LogLevel.error);
@@ -77,13 +75,8 @@ class IsolateService {
 
     final completer = Completer<R>();
     _taskQueue.add(_QueuedTask<R, P>(task, param, completer));
-    _logger.log(
-      'Task queued. Queue length: ${_taskQueue.length}',
-      level: LogLevel.info,
-    );
 
     if (!_isProcessing) {
-      _logger.log('Starting queue processing...', level: LogLevel.info);
       _processQueue();
     }
 
@@ -110,7 +103,6 @@ class IsolateService {
   void _processQueue() async {
     if (_taskQueue.isEmpty) {
       _isProcessing = false;
-      _logger.log('Queue empty, stopping processing.', level: LogLevel.info);
       return;
     }
 
@@ -118,7 +110,6 @@ class IsolateService {
     final currentTask = _taskQueue.removeFirst();
     final responsePort = ReceivePort();
 
-    _logger.log('Sending task to isolate...', level: LogLevel.info);
     _sendPort?.send(
       _IsolateTask(currentTask.param, currentTask.task, responsePort.sendPort),
     );

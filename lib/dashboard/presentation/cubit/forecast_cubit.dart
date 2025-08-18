@@ -3,9 +3,8 @@ import 'package:injectable/injectable.dart';
 import 'package:weather_app/core/common/abs_normal_state.dart';
 import 'package:weather_app/core/common/failure_state.dart';
 import 'package:weather_app/core/constants/typedef.dart';
+import 'package:weather_app/core/helper/data_parshing_helper.dart';
 import 'package:weather_app/core/services/get_it/service_locator.dart';
-import 'package:weather_app/core/services/isolate_service.dart';
-import 'package:weather_app/core/utils/debug_log_utils.dart';
 import 'package:weather_app/dashboard/domain/model/weather_model.dart';
 import 'package:weather_app/dashboard/domain/repo/weather_repo.dart';
 
@@ -22,28 +21,8 @@ class ForecastCubit extends Cubit<AbsNormalState<WeatherModel>> {
 
     response.fold((l) async {
       try {
-        if (l is Map &&
-            l.containsKey('data') &&
-            l['data'] is Map &&
-            l['data'] != null) {
-          final data = l['data'];
-          final weatherData = await IsolateService()
-              .mapParsing<WeatherModel, dynamic>(
-                fromJson: WeatherModel.fromJson,
-                data: data,
-              );
-          emit(AbsNormalSuccessState(data: weatherData));
-        } else {
-          emit(
-            AbsNormalFailureState<WeatherModel>(
-              failure: Failure(message: 'Error on data formate'),
-            ),
-          );
-          DebugLoggerService().log(
-            "Error on data formate",
-            level: LogLevel.warning,
-          );
-        }
+        final data = await mapSucessData(l: l, fromJson: WeatherModel.fromJson);
+        emit(AbsNormalSuccessState(data: data));
       } catch (e) {
         emit(
           AbsNormalFailureState<WeatherModel>(
