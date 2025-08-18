@@ -11,6 +11,7 @@ import 'package:weather_app/core/env/get_env_config.dart';
 import 'package:weather_app/core/routes/navigation_service.dart';
 import 'package:weather_app/core/routes/route_generator.dart';
 import 'package:weather_app/core/services/get_it/service_locator.dart';
+import 'package:weather_app/core/services/isolate_service.dart';
 import 'package:weather_app/core/theme/dark_theme.dart';
 import 'package:weather_app/core/theme/light_theme.dart';
 import 'package:weather_app/core/utils/debug_log_utils.dart';
@@ -63,6 +64,7 @@ Future<void> main() async {
       level: LogLevel.error,
     );
   }
+  await IsolateService().init();
   runApp(MyApp());
 }
 
