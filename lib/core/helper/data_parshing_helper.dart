@@ -1,8 +1,6 @@
 import 'package:weather_app/core/services/isolate_service.dart';
 import 'package:weather_app/core/utils/debug_log_utils.dart';
 
-final _logger = DebugLoggerService();
-
 /// Safely parses nested data from a response Map
 /// [fromJson] : Function to convert a Map into your model T
 /// [l]        : Response data (usually decoded JSON)
@@ -15,7 +13,7 @@ Future<R> mapSucessData<R>({
   try {
     // Check if input is a Map, else return empty object
     if (l is! Map) {
-      _logger.log('$R is not a Map. Returning empty object.');
+      DebugLoggerService.log('$R is not a Map. Returning empty object.');
       return parseObject({}, fromJson);
     }
 
@@ -44,12 +42,14 @@ Future<R> mapSucessData<R>({
     }
 
     // If data is not a Map, return empty object
-    _logger.log('$R final data is not a Map. Returning empty object.');
+    DebugLoggerService.log(
+      '$R final data is not a Map. Returning empty object.',
+    );
     return parseObject({}, fromJson);
   } catch (e, st) {
     // Log exceptions and rethrow to let caller handle if needed
-    _logger.log('Exception in $R : $e', level: LogLevel.error);
-    _logger.log('StackTrace: $st', level: LogLevel.error);
+    DebugLoggerService.log('Exception in $R : $e', level: LogLevel.error);
+    DebugLoggerService.log('StackTrace: $st', level: LogLevel.error);
     rethrow;
   }
 }
@@ -61,7 +61,7 @@ Future<R> mapSucessData<R>({
 /// - Unwrap nested `"data"` keys until it reaches the actual list.
 /// - If [extraKey] is provided, it will attempt to extract the list under that key.
 /// - If no valid list is found, it returns an empty list.
-/// - Uses [_logger] to track each step and catch exceptions.
+/// - Uses [DebugLoggerService] to track each step and catch exceptions.
 Future<List<R>> listSucessData<R>({
   required R Function(Map<String, dynamic>) fromJson,
   required dynamic l,
@@ -70,7 +70,9 @@ Future<List<R>> listSucessData<R>({
   try {
     // Step 1: Ensure input is a Map
     if (l is! Map) {
-      _logger.log('$R: Provided input is not a Map. Returning empty list.');
+      DebugLoggerService.log(
+        '$R: Provided input is not a Map. Returning empty list.',
+      );
       return <R>[];
     }
 
@@ -91,7 +93,7 @@ Future<List<R>> listSucessData<R>({
         );
         return listData;
       } else {
-        _logger.log(
+        DebugLoggerService.log(
           '$R: extraKey "$extraKey" is not a List. Returning empty list.',
         );
         return <R>[];
@@ -108,11 +110,14 @@ Future<List<R>> listSucessData<R>({
     }
 
     // Step 5: Fallback case
-    _logger.log('$R: No valid list found. Returning empty list.');
+    DebugLoggerService.log('$R: No valid list found. Returning empty list.');
     return <R>[];
   } catch (e, st) {
-    _logger.log('Exception while parsing $R: $e', level: LogLevel.error);
-    _logger.log('StackTrace: $st', level: LogLevel.error);
+    DebugLoggerService.log(
+      'Exception while parsing $R: $e',
+      level: LogLevel.error,
+    );
+    DebugLoggerService.log('StackTrace: $st', level: LogLevel.error);
     rethrow;
   }
 }
@@ -124,12 +129,12 @@ T parseObject<T>(dynamic rawMap, T Function(Map<String, dynamic>) fromJson) {
     if (rawMap is Map<String, dynamic>) {
       return fromJson(rawMap);
     } else {
-      _logger.log('$T is not a Map, converting empty Map');
+      DebugLoggerService.log('$T is not a Map, converting empty Map');
       return fromJson({});
     }
   } catch (e, st) {
-    _logger.log('Exception in $T : $e', level: LogLevel.error);
-    _logger.log('StackTrace: $st', level: LogLevel.error);
+    DebugLoggerService.log('Exception in $T : $e', level: LogLevel.error);
+    DebugLoggerService.log('StackTrace: $st', level: LogLevel.error);
     rethrow;
   }
 }
@@ -146,8 +151,8 @@ List<T> parseList<T>(
         .map(fromJson)
         .toList();
   } catch (e, st) {
-    _logger.log('Exception in $T : $e', level: LogLevel.error);
-    _logger.log('StackTrace: $st', level: LogLevel.error);
+    DebugLoggerService.log('Exception in $T : $e', level: LogLevel.error);
+    DebugLoggerService.log('StackTrace: $st', level: LogLevel.error);
     rethrow;
   }
 }

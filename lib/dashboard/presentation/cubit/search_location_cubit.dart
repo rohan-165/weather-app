@@ -37,7 +37,7 @@ class SearchLocationCubit
               AbsNormalSuccessState<List<SearchLocationModel>>(data: locations),
             );
           } else {
-            DebugLoggerService().log(
+            DebugLoggerService.log(
               "Error on data format",
               level: LogLevel.warning,
             );

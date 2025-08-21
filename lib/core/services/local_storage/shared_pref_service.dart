@@ -39,7 +39,7 @@ class SharedPrefsServices {
       String dynamicData = json.encode(data.toJson());
       await sharedPreferences.setString(key, dynamicData);
     } catch (error) {
-      DebugLoggerService().log(error.toString(), level: LogLevel.error);
+      DebugLoggerService.log(error.toString(), level: LogLevel.error);
       rethrow;
     }
   }

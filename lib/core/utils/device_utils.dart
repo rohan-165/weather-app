@@ -8,10 +8,7 @@ Future<String> getIEMI() async {
     String imei = androidInfo.id;
     return imei;
   } catch (e) {
-    DebugLoggerService().log(
-      "Error to generate iemi $e",
-      level: LogLevel.error,
-    );
+    DebugLoggerService.log("Error to generate iemi $e", level: LogLevel.error);
     return '';
   }
 }

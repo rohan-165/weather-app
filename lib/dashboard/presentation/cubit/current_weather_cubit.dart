@@ -30,7 +30,7 @@ class CurrentWeatherCubit extends Cubit<AbsNormalState<WeatherModel>> {
           final data = l['data'];
           emit(AbsNormalSuccessState(data: WeatherModel.fromJson(data)));
         } else {
-          DebugLoggerService().log(
+          DebugLoggerService.log(
             "Error on data formate",
             level: LogLevel.warning,
           );

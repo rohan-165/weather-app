@@ -63,7 +63,7 @@ class DebugUtils {
   static int _mapLogLevelToInt(LogLevel level) {
     switch (level) {
       case LogLevel.success:
-        return 700;
+        return 600;
       case LogLevel.info:
         return 800;
       case LogLevel.warning:
@@ -81,11 +81,11 @@ class DebugUtils {
 ///
 /// Example:
 /// ```dart
-/// final logger = DebugLoggerService();
+/// final logger = DebugLoggerService;
 /// logger.log('Success!', level: LogLevel.success);
 /// ```
 class DebugLoggerService {
-  void log(
+  static void log(
     String message, {
     bool breakPoint = false,
     LogLevel level = LogLevel.info,

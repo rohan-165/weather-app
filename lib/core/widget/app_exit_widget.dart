@@ -85,7 +85,7 @@ class _AppExitState<T> extends State<AppExit<T>> implements PopEntry<T> {
     if (_lastBackPressTime == null ||
         now.difference(_lastBackPressTime!) > _exitThreshold) {
       _lastBackPressTime = now;
-      AppToasts().showToast(
+      AppToasts.showToast(
         message: "Tap back again to exit app.",
         backgroundColor: Colors.black,
       );

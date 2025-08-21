@@ -18,7 +18,6 @@ List<R> _parseList<R>(
 }
 
 class IsolateService {
-  final DebugLoggerService _logger = DebugLoggerService();
   static final IsolateService _instance = IsolateService._internal();
   factory IsolateService() => _instance;
 
@@ -34,7 +33,10 @@ class IsolateService {
   /// Initialize the isolate
   Future<void> init() async {
     if (_isolate != null) {
-      _logger.log('Isolate already initialized', level: LogLevel.info);
+      DebugLoggerService.log(
+        'Isolate already initialized',
+        level: LogLevel.info,
+      );
       return;
     }
 
@@ -50,8 +52,7 @@ class IsolateService {
     final port = ReceivePort();
     sendPort.send(port.sendPort);
 
-    final logger = DebugLoggerService();
-    logger.log(
+    DebugLoggerService.log(
       'Isolate entry started, listening for tasks...',
       level: LogLevel.info,
     );
@@ -63,7 +64,7 @@ class IsolateService {
           message.replyTo.send(result);
         } catch (e, st) {
           message.replyTo.send(Future.error(e, st));
-          logger.log('Task failed ❌ : $e', level: LogLevel.error);
+          DebugLoggerService.log('Task failed ❌ : $e', level: LogLevel.error);
         }
       }
     });
@@ -117,10 +118,13 @@ class IsolateService {
     try {
       final result = await responsePort.first;
       currentTask.completer.complete(result as dynamic);
-      _logger.log('Task completed successfully ✅', level: LogLevel.success);
+      DebugLoggerService.log(
+        'Task completed successfully ✅',
+        level: LogLevel.success,
+      );
     } catch (e, st) {
       currentTask.completer.completeError(e, st);
-      _logger.log('Task failed ❌: $e', level: LogLevel.error);
+      DebugLoggerService.log('Task failed ❌: $e', level: LogLevel.error);
     } finally {
       responsePort.close();
       _processQueue(); // process next task
@@ -130,15 +134,21 @@ class IsolateService {
   /// Dispose the isolate
   void dispose() {
     if (_isolate != null) {
-      _logger.log('Disposing IsolateService...', level: LogLevel.warning);
+      DebugLoggerService.log(
+        'Disposing IsolateService...',
+        level: LogLevel.warning,
+      );
       _isolate?.kill(priority: Isolate.immediate);
       _isolate = null;
       _sendPort = null;
       _isProcessing = false;
       _taskQueue.clear();
-      _logger.log('Isolate disposed successfully 🛑', level: LogLevel.success);
+      DebugLoggerService.log(
+        'Isolate disposed successfully 🛑',
+        level: LogLevel.success,
+      );
     } else {
-      _logger.log(
+      DebugLoggerService.log(
         'Dispose called, but isolate already null',
         level: LogLevel.warning,
       );

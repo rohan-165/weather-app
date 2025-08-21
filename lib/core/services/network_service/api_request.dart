@@ -34,8 +34,6 @@ abstract class ApiRequest {
 @LazySingleton(as: ApiRequest)
 class ApiRequestImpl implements ApiRequest {
   final ApiManager _apiManager;
-  final DebugLoggerService logger = DebugLoggerService();
-  final toastHelper = AppToasts();
   ApiRequestImpl(this._apiManager);
   @override
   ApiManager get apiManager => _apiManager;
@@ -50,7 +48,7 @@ class ApiRequestImpl implements ApiRequest {
     final data = response?.data;
 
     void logError(String msg) =>
-        logger.log(msg, level: LogLevel.error, tag: path);
+        DebugLoggerService.log(msg, level: LogLevel.error, tag: path);
 
     // ✅ Success case
     if (statusCode == 200 || statusCode == 201) {
@@ -60,7 +58,7 @@ class ApiRequestImpl implements ApiRequest {
     // ✅ Common error handling
     switch (statusCode) {
       case 500:
-        toastHelper.showToast(
+        AppToasts.showToast(
           message: 'Server Error',
           toastType: ToastType.ERROR,
         );
@@ -70,7 +68,7 @@ class ApiRequestImpl implements ApiRequest {
         );
 
       case 401:
-        toastHelper.showToast(
+        AppToasts.showToast(
           message: 'Unauthorized',
           toastType: ToastType.ERROR,
         );
@@ -85,7 +83,7 @@ class ApiRequestImpl implements ApiRequest {
         return Right(Failure.fromJson(data));
 
       case 403:
-        toastHelper.showToast(
+        AppToasts.showToast(
           message: 'Forbidden - You do not have permission.',
           toastType: ToastType.ERROR,
         );
@@ -93,7 +91,7 @@ class ApiRequestImpl implements ApiRequest {
         return Right(Failure.fromJson(data));
 
       case 404:
-        toastHelper.showToast(message: 'Not Found', toastType: ToastType.ERROR);
+        AppToasts.showToast(message: 'Not Found', toastType: ToastType.ERROR);
         logError('Resource Not Found (404)');
         return Right(Failure.fromJson(data));
 
@@ -169,7 +167,7 @@ class ApiRequestImpl implements ApiRequest {
       switch (statusCode) {
         case 401:
           errorMessage = 'Unauthorized access. Please log in again.';
-          logger.log(
+          DebugLoggerService.log(
             'Unauthorized (401) - triggering logout...',
             level: LogLevel.error,
           );
@@ -179,68 +177,71 @@ class ApiRequestImpl implements ApiRequest {
         case 403:
           errorMessage =
               'Forbidden: You don\'t have permission to access this resource.';
-          logger.log('Forbidden (403)', level: LogLevel.error);
+          DebugLoggerService.log('Forbidden (403)', level: LogLevel.error);
           break;
 
         case 404:
           errorMessage = 'Requested resource not found.';
-          logger.log('Not Found (404)', level: LogLevel.error);
+          DebugLoggerService.log('Not Found (404)', level: LogLevel.error);
           break;
 
         case 500:
           errorMessage = 'Server error. Please try again later.';
-          logger.log('Internal Server Error (500)', level: LogLevel.error);
+          DebugLoggerService.log(
+            'Internal Server Error (500)',
+            level: LogLevel.error,
+          );
           break;
 
         default:
           errorMessage = e.message ?? 'Unexpected network error';
-          logger.log(
+          DebugLoggerService.log(
             'DioException [$statusCode] - ${e.message}',
             level: LogLevel.error,
           );
       }
 
       // Show toast for the error
-      toastHelper.showToast(message: errorMessage, toastType: ToastType.ERROR);
+      AppToasts.showToast(message: errorMessage, toastType: ToastType.ERROR);
 
       return Right(
         Failure(message: errorMessage, statusCode: statusCode?.toString()),
       );
     } on SocketException {
-      logger.log(
+      DebugLoggerService.log(
         'No Internet connection.',
         level: LogLevel.error,
         tag: 'SocketException',
       );
-      toastHelper.showToast(
+      AppToasts.showToast(
         message: 'No Internet connection.',
         toastType: ToastType.ERROR,
       );
       return Right(Failure(message: 'No Internet connection.'));
     } on TimeoutException {
-      logger.log(
+      DebugLoggerService.log(
         'Request timed out.',
         level: LogLevel.error,
         tag: 'TimeoutException',
       );
-      toastHelper.showToast(
+      AppToasts.showToast(
         message: 'Request timed out.',
         toastType: ToastType.ERROR,
       );
       return Right(Failure(message: 'Request timed out.'));
     } on FormatException {
-      logger.log(
+      DebugLoggerService.log(
         'Bad response format.',
         level: LogLevel.error,
         tag: 'FormatException',
       );
-      toastHelper.showToast(
+      AppToasts.showToast(
         message: 'Bad response format.',
         toastType: ToastType.ERROR,
       );
       return Right(Failure(message: 'Bad response format.'));
     } catch (e) {
-      logger.log('Something went wrong', level: LogLevel.error);
+      DebugLoggerService.log('Something went wrong', level: LogLevel.error);
       return Right(Failure(message: errorMessage ?? 'Something went wrong'));
     }
   }

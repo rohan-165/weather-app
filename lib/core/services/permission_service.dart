@@ -77,7 +77,7 @@ class PermissionService {
     } else {
       await permission
           .onDeniedCallback(() async {
-            DebugLoggerService().log(
+            DebugLoggerService.log(
               "::: $permissionFor permission status: permission denied :::",
             );
             onDeniedCallback();
@@ -87,13 +87,13 @@ class PermissionService {
               key: permissionFor.toString(),
               value: 0,
             );
-            DebugLoggerService().log(
+            DebugLoggerService.log(
               "::: $permissionFor permission status: permission granted :::",
             );
             onGrantedCallback();
           })
           .onPermanentlyDeniedCallback(() {
-            DebugLoggerService().log(
+            DebugLoggerService.log(
               "::: $permissionFor permission status: permission permanently denied :::",
             );
             if (deniedPermissionCount >= 2) {
@@ -115,7 +115,7 @@ class PermissionService {
             }
           })
           .onLimitedCallback(() {
-            DebugLoggerService().log(
+            DebugLoggerService.log(
               "::: $permissionFor permission status: permission limited :::",
             );
             if (onOthersDeniedCallback != null) {
@@ -123,7 +123,7 @@ class PermissionService {
             }
           })
           .onProvisionalCallback(() {
-            DebugLoggerService().log(
+            DebugLoggerService.log(
               "::: $permissionFor permission status: permission provisional :::",
             );
             if (onOthersDeniedCallback != null) {

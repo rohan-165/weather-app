@@ -5,7 +5,7 @@ import 'package:weather_app/core/constants/app_colors.dart';
 import 'package:weather_app/core/constants/enum.dart';
 
 class AppToasts {
-  showToast({
+  static showToast({
     required String message,
     Color? backgroundColor,
     Toast toastLength = Toast.LENGTH_LONG,

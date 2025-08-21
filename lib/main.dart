@@ -30,36 +30,36 @@ Future<void> main() async {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    DebugLoggerService().log(
+    DebugLoggerService.log(
       "Device orientation locked to portrait.",
       level: LogLevel.info,
     );
   } catch (e) {
-    DebugLoggerService().log(
+    DebugLoggerService.log(
       "Failed to lock device orientation: $e",
       level: LogLevel.error,
     );
   }
   try {
     await dotenv.load(fileName: GetEnvConfig.keyEnvironmentFile);
-    DebugLoggerService().log(
+    DebugLoggerService.log(
       "Environment file loaded: ${GetEnvConfig.keyEnvironmentFile}",
       level: LogLevel.success,
     );
   } catch (e) {
-    DebugLoggerService().log(
+    DebugLoggerService.log(
       "Failed to load environment file: $e",
       level: LogLevel.error,
     );
   }
   try {
     await configureDependencies();
-    DebugLoggerService().log(
+    DebugLoggerService.log(
       "Dependencies configured successfully.",
       level: LogLevel.success,
     );
   } catch (e) {
-    DebugLoggerService().log(
+    DebugLoggerService.log(
       "Dependency configuration failed: $e",
       level: LogLevel.error,
     );
