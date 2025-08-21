@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:weather_app/core/bloc/app_open_cubit.dart';
-import 'package:weather_app/core/bloc/internet_cubit.dart';
 import 'package:weather_app/core/bloc/location_cubit.dart';
 import 'package:weather_app/core/bloc/theme_cubit.dart';
 import 'package:weather_app/core/env/get_env_config.dart';
@@ -17,11 +16,8 @@ import 'package:weather_app/core/theme/light_theme.dart';
 import 'package:weather_app/core/utils/debug_log_utils.dart';
 import 'package:weather_app/core/widget/app_exit_widget.dart';
 import 'package:weather_app/core/widget/internet_connection_widget.dart';
-import 'package:weather_app/dashboard/presentation/cubit/current_weather_cubit.dart';
-import 'package:weather_app/dashboard/presentation/cubit/forecast_cubit.dart';
-import 'package:weather_app/dashboard/presentation/cubit/search_location_cubit.dart';
-import 'package:weather_app/dashboard/presentation/cubit/selected_location_cubit.dart';
 import 'package:weather_app/dashboard/presentation/screen/weather_screen.dart';
+import 'package:weather_app/global_bloc_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -93,22 +89,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider<AppOpenCubit>.value(value: getIt<AppOpenCubit>()),
-        BlocProvider<InternetCubit>.value(value: getIt<InternetCubit>()),
-        BlocProvider<ThemeCubit>.value(value: getIt<ThemeCubit>()),
-        BlocProvider<LocationCubit>.value(value: getIt<LocationCubit>()),
-        BlocProvider<CurrentWeatherCubit>.value(
-          value: getIt<CurrentWeatherCubit>(),
-        ),
-        BlocProvider<ForecastCubit>.value(value: getIt<ForecastCubit>()),
-        BlocProvider<SearchLocationCubit>.value(
-          value: getIt<SearchLocationCubit>(),
-        ),
-        BlocProvider<SelectedLocationCubit>.value(
-          value: getIt<SelectedLocationCubit>(),
-        ),
-      ],
+      providers: globalBlocProvider(),
       child: BlocBuilder<ThemeCubit, String>(
         builder: (context, theme) {
           return AppExit(
